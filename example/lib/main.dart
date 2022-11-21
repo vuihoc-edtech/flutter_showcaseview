@@ -180,6 +180,7 @@ class _MailPageState extends State<MailPage> {
                                   children: <Widget>[
                                     Showcase(
                                       key: _one,
+                                      tooltipPosition: TooltipPosition.top,
                                       description: 'Tap to see menu options',
                                       disableDefaultTargetGestures: true,
                                       child: GestureDetector(
@@ -315,6 +316,7 @@ class _MailPageState extends State<MailPage> {
         child: Showcase(
             key: key,
             description: 'Tap to check mail',
+            tooltipPosition: TooltipPosition.top,
             disposeOnTap: true,
             onTargetClick: () {
               Navigator.push<void>(
