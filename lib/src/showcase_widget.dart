@@ -80,6 +80,9 @@ class ShowCaseWidget extends StatefulWidget {
   /// whether enabling auto scroll so as to make the target widget visible.
   final bool enableAutoScroll;
 
+  /// Enable/disable showcase globally. Enabled by default.
+  final bool enableShowcase;
+
   const ShowCaseWidget({
     required this.builder,
     this.onFinish,
@@ -94,6 +97,7 @@ class ShowCaseWidget extends StatefulWidget {
     this.disableScaleAnimation = false,
     this.enableAutoScroll = false,
     this.disableBarrierInteraction = false,
+    this.enableShowcase = true,
   });
 
   static GlobalKey? activeTargetWidget(BuildContext context) {
@@ -118,48 +122,44 @@ class ShowCaseWidget extends StatefulWidget {
 class ShowCaseWidgetState extends State<ShowCaseWidget> {
   List<GlobalKey>? ids;
   int? activeWidgetId;
-  late bool autoPlay;
-  late bool disableMovingAnimation;
-  late bool disableScaleAnimation;
-  late Duration autoPlayDelay;
-  late bool enableAutoPlayLock;
-  late bool enableAutoScroll;
-  late bool disableBarrierInteraction;
 
-  /// Returns value of  [ShowCaseWidget.blurValue]
+  /// These properties are only here so that it can be accessed by
+  /// [Showcase]
+  bool get autoPlay => widget.autoPlay;
+
+  bool get disableMovingAnimation => widget.disableMovingAnimation;
+
+  bool get disableScaleAnimation => widget.disableScaleAnimation;
+
+  Duration get autoPlayDelay => widget.autoPlayDelay;
+
+  bool get enableAutoPlayLock => widget.enableAutoPlayLock;
+
+  bool get enableAutoScroll => widget.enableAutoScroll;
+
+  bool get disableBarrierInteraction => widget.disableBarrierInteraction;
+
+  bool get enableShowcase => widget.enableShowcase;
+
+  /// Returns value of [ShowCaseWidget.blurValue]
   double get blurValue => widget.blurValue;
 
-  @override
-  void initState() {
-    super.initState();
-    _init();
-  }
-
-  @override
-  void didUpdateWidget(covariant ShowCaseWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _init();
-  }
-
-  void _init() {
-    autoPlayDelay = widget.autoPlayDelay;
-    autoPlay = widget.autoPlay;
-    disableMovingAnimation = widget.disableMovingAnimation;
-    disableScaleAnimation = widget.disableScaleAnimation;
-    enableAutoPlayLock = widget.enableAutoPlayLock;
-    enableAutoScroll = widget.enableAutoScroll;
-    disableBarrierInteraction = widget.disableBarrierInteraction;
-  }
-
   /// Starts Showcase view from the beginning of specified list of widget ids.
+  /// If this function is used when showcase has been disabled then it will
+  /// throw an exception.
   void startShowCase(List<GlobalKey> widgetIds) {
-    if (mounted) {
-      setState(() {
-        ids = widgetIds;
-        activeWidgetId = 0;
-        _onStart();
-      });
+    if (!enableShowcase) {
+      throw Exception(
+        "You are trying to start Showcase while it has been disabled with "
+        "`enableShowcase` parameter to false from ShowCaseWidget",
+      );
     }
+    if (!mounted) return;
+    setState(() {
+      ids = widgetIds;
+      activeWidgetId = 0;
+      _onStart();
+    });
   }
 
   /// Completes showcase of given key and starts next one
@@ -173,9 +173,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
         if (activeWidgetId! >= ids!.length) {
           _cleanupAfterSteps();
-          if (widget.onFinish != null) {
-            widget.onFinish!();
-          }
+          widget.onFinish?.call();
         }
       });
     }
@@ -192,9 +190,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
         if (activeWidgetId! >= ids!.length) {
           _cleanupAfterSteps();
-          if (widget.onFinish != null) {
-            widget.onFinish!();
-          }
+          widget.onFinish?.call();
         }
       });
     }
@@ -210,9 +206,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
         _onStart();
         if (activeWidgetId! >= ids!.length) {
           _cleanupAfterSteps();
-          if (widget.onFinish != null) {
-            widget.onFinish!();
-          }
+          widget.onFinish?.call();
         }
       });
     }
@@ -220,9 +214,7 @@ class ShowCaseWidgetState extends State<ShowCaseWidget> {
 
   /// Dismiss entire showcase view
   void dismiss() {
-    if (mounted) {
-      setState(_cleanupAfterSteps);
-    }
+    if (mounted) setState(_cleanupAfterSteps);
   }
 
   void _onStart() {

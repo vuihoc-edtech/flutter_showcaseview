@@ -182,9 +182,11 @@ class _MailPageState extends State<MailPage> {
                                       key: _one,
                                       description: 'Tap to see menu options',
                                       disableDefaultTargetGestures: true,
+                                      onBarrierClick: () =>
+                                          debugPrint('Barrier clicked'),
                                       child: GestureDetector(
                                         onTap: () =>
-                                            print('menu button clicked'),
+                                            debugPrint('menu button clicked'),
                                         child: Icon(
                                           Icons.menu,
                                           color: Theme.of(context).primaryColor,
@@ -315,6 +317,7 @@ class _MailPageState extends State<MailPage> {
         child: Showcase(
             key: key,
             description: 'Tap to check mail',
+            tooltipPosition: TooltipPosition.top,
             disposeOnTap: true,
             onTargetClick: () {
               Navigator.push<void>(
