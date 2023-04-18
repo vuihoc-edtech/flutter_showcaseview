@@ -173,10 +173,10 @@ class _OverlayBuilderState extends State<OverlayBuilder> {
   void addToOverlay(OverlayEntry overlayEntry) async {
     if (mounted) {
       final showCaseContext = ShowCaseWidget.of(context).context;
-      if (Overlay.maybeOf(showCaseContext) != null) {
-        Overlay.of(showCaseContext).insert(overlayEntry);
-      } else if (Overlay.maybeOf(context) != null) {
-        Overlay.of(context).insert(overlayEntry);
+      if (showCaseContext.findAncestorStateOfType<OverlayState>() != null) {
+        Overlay.of(showCaseContext)?.insert(overlayEntry);
+      } else if (context.findAncestorStateOfType<OverlayState>() != null) {
+        Overlay.of(context)?.insert(overlayEntry);
       }
     }
   }

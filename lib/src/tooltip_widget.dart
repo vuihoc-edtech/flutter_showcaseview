@@ -123,8 +123,8 @@ class _ToolTipWidgetState extends State<ToolTipWidget>
     final topPosition = position.dy - ((widget.position?.getHeight() ?? 0) / 2);
     final hasSpaceInTop = topPosition >= height;
     final EdgeInsets viewInsets = EdgeInsets.fromWindowPadding(
-        WidgetsBinding.instance.window.viewInsets,
-        WidgetsBinding.instance.window.devicePixelRatio);
+        WidgetsBinding.instance!.window.viewInsets,
+        WidgetsBinding.instance!.window.devicePixelRatio);
     final double actualVisibleScreenHeight =
         (widget.screenSize?.height ?? MediaQuery.of(context).size.height) -
             viewInsets.bottom;
